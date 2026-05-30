@@ -3,921 +3,1123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Selección — Aprende el algoritmo</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<title>Selección — Guía Completa</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #080c10;
-    --surface: #0e1318;
-    --card: #141b22;
-    --border: #1e2a35;
-    --accent: #00b4d8;
-    --accent2: #f4a261;
-    --accent3: #e63946;
-    --sorted: #57cc99;
-    --min-color: #f72585;
-    --text: #eef2f7;
-    --muted: #6a7f90;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 55% 35% at 80% 5%, #00b4d812 0%, transparent 55%),
-      radial-gradient(ellipse 45% 35% at 5% 95%, #57cc9910 0%, transparent 55%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 1060px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
-
-  header { text-align: center; margin-bottom: 50px; }
-
-  .badge {
-    display: inline-block;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 4px 12px;
-    border-radius: 2px;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-  }
-
-  h1 {
-    font-size: clamp(2.5rem, 7vw, 5rem);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -3px;
-  }
-
-  h1 span { color: var(--accent); }
-
-  .subtitle {
-    margin-top: 14px;
-    color: var(--muted);
-    font-size: 1rem;
-    max-width: 530px;
-    margin-inline: auto;
-    line-height: 1.6;
-  }
-
-  /* Concept cards */
-  .concept-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 16px;
-    margin-bottom: 50px;
-  }
-
-  .concept-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, border-color 0.2s;
-  }
-
-  .concept-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-  }
-
-  .concept-card.blue::before   { background: var(--accent); }
-  .concept-card.orange::before { background: var(--accent2); }
-  .concept-card.red::before    { background: var(--accent3); }
-  .concept-card.green::before  { background: var(--sorted); }
-
-  .concept-card:hover { transform: translateY(-2px); border-color: #2e3f50; }
-
-  .concept-icon { font-size: 2rem; margin-bottom: 12px; }
-  .concept-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-  .concept-card p {
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.65;
-    font-family: 'Space Mono', monospace;
-  }
-
-  /* Steps */
-  .steps-section { margin-bottom: 50px; }
-
-  .steps-section h2 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 24px;
-  }
-
-  .steps-section h2 span { color: var(--accent); }
-
-  .step-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .step-item {
-    padding: 24px;
-    border-right: 1px solid var(--border);
-    background: var(--card);
-  }
-
-  .step-item:last-child { border-right: none; }
-
-  .step-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--border);
-    line-height: 1;
-    margin-bottom: 10px;
-  }
-
-  .step-item h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
-
-  .step-item p {
-    font-size: 0.8rem;
-    color: var(--muted);
-    line-height: 1.6;
-    font-family: 'Space Mono', monospace;
-  }
-
-  /* Demo */
-  .demo-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 40px;
-  }
-
-  .demo-header {
-    padding: 20px 28px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .demo-header h2 { font-size: 1.1rem; font-weight: 700; }
-
-  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-
-  button {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    padding: 8px 18px;
-    border-radius: 4px;
-    border: 1px solid;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
-  .btn-primary:hover { background: #009bbd; }
-  .btn-primary:disabled { opacity: 0.35; cursor: default; }
-  .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
-  .btn-secondary:hover { border-color: #3a5060; background: #141b22; }
-
-  .speed-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 70px; height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-  }
-
-  /* Bars */
-  .bars-wrap {
-    padding: 32px 28px 16px;
-    min-height: 240px;
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    position: relative;
-  }
-
-  .bar-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-  }
-
-  .bar-val {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    transition: color 0.2s;
-  }
-
-  .bar {
-    width: 100%;
-    border-radius: 4px 4px 0 0;
-    transition: height 0.25s cubic-bezier(.4,0,.2,1), background 0.2s;
-  }
-
-  .bar-idx {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: #2e3f50;
-    margin-top: 4px;
-  }
-
-  /* Pointer row */
-  .pointer-row {
-    padding: 0 28px 8px;
-    display: flex;
-    gap: 6px;
-    position: relative;
-    min-height: 22px;
-  }
-
-  .pointer-cell {
-    flex: 1;
-    text-align: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    transition: all 0.2s;
-  }
-
-  /* Stats */
-  .stats-row {
-    display: flex;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .stat-box {
-    flex: 1;
-    padding: 14px 20px;
-    border-right: 1px solid var(--border);
-    font-family: 'Space Mono', monospace;
-  }
-
-  .stat-box:last-child { border-right: none; }
-
-  .stat-label {
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .stat-val { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
-  .stat-val.orange { color: var(--accent2); }
-  .stat-val.red    { color: var(--min-color); }
-  .stat-val.green  { color: var(--sorted); }
-
-  /* Array cells */
-  .array-display {
-    padding: 0 28px 20px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .arr-cell {
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    width: 38px; height: 38px;
-    display: flex; align-items: center; justify-content: center;
-    border: 2px solid var(--border);
-    border-radius: 5px;
-    background: var(--card);
-    transition: all 0.2s;
-  }
-
-  .arr-cell.scanning  { border-color: var(--accent); color: var(--accent); background: #00b4d815; }
-  .arr-cell.minimum   { border-color: var(--min-color); color: var(--min-color); background: #f7258520; }
-  .arr-cell.boundary  { border-color: var(--accent2); color: var(--accent2); }
-  .arr-cell.swapping  { border-color: var(--accent2); color: var(--accent2); background: #f4a26120; }
-  .arr-cell.sorted    { border-color: var(--sorted); color: var(--sorted); background: #57cc9918; }
-
-  /* Legend */
-  .legend {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 12px 28px 20px;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .legend-item { display: flex; align-items: center; gap: 8px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
-
-  /* Step explain */
-  .step-explain {
-    padding: 20px 28px;
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--muted);
-    min-height: 70px;
-    border-top: 1px solid var(--border);
-  }
-
-  .step-explain strong { color: var(--text); }
-  .step-explain .hl  { color: var(--accent); font-weight: 700; }
-  .step-explain .hl2 { color: var(--accent2); font-weight: 700; }
-  .step-explain .hlm { color: var(--min-color); font-weight: 700; }
-  .step-explain .hls { color: var(--sorted); font-weight: 700; }
-
-  /* Pseudocode */
-  .pseudo-section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 40px;
-  }
-
-  .pseudo-header {
-    padding: 14px 24px;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot.r { background: #ff5f57; }
-  .dot.y { background: #ffbd2e; }
-  .dot.g { background: #28c840; }
-
-  pre {
-    padding: 24px;
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    line-height: 2;
-    overflow-x: auto;
-    tab-size: 2;
-  }
-
-  .kw  { color: #7ec8e3; }
-  .fn  { color: var(--accent2); }
-  .cm  { color: #2e4a5e; font-style: italic; }
-  .num { color: var(--sorted); }
-  .op  { color: var(--min-color); }
-  .var { color: var(--accent); }
-
-  /* Complexity */
-  .complexity-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 40px;
-  }
-
-  .comp-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px 24px;
-    text-align: center;
-  }
-
-  .comp-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  .comp-val {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .comp-desc {
-    font-size: 0.78rem;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    line-height: 1.5;
-  }
-
-  /* VS burbuja */
-  .vs-section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 40px;
-  }
-
-  .vs-header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    font-weight: 800;
-    font-size: 1rem;
-    letter-spacing: -0.5px;
-  }
-
-  .vs-header span { color: var(--accent); }
-
-  .vs-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-  }
-
-  .vs-table th {
-    padding: 12px 20px;
-    text-align: left;
-    color: var(--muted);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .vs-table td {
-    padding: 11px 20px;
-    border-bottom: 1px solid #0e1318;
-  }
-
-  .vs-table tr:last-child td { border-bottom: none; }
-  .vs-table td:first-child { color: var(--muted); }
-  .vs-table td:nth-child(2) { color: var(--accent); }
-  .vs-table td:nth-child(3) { color: #f72585; }
-
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: var(--card); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  @media (max-width: 600px) {
-    .step-cards { grid-template-columns: 1fr 1fr; }
-    .step-item { border-bottom: 1px solid var(--border); }
-    .stats-row { flex-wrap: wrap; }
-    .stat-box { min-width: 50%; }
-  }
+:root {
+  --bg:      #06090f;
+  --surface: #0b0e18;
+  --card:    #0f1320;
+  --card2:   #131826;
+  --border:  #192030;
+  --border2: #222b3e;
+  --accent:  #00b4d8;
+  --accent2: #f4a261;
+  --accent3: #e63946;
+  --sorted:  #57cc99;
+  --minc:    #f72585;
+  --text:    #e8eef4;
+  --muted:   #637080;
+  --muted2:  #3a4858;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Syne',sans-serif;line-height:1.6;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 700px 500px at 85% 5%,  #00b4d810 0%,transparent 60%),
+    radial-gradient(ellipse 600px 500px at 5%  95%, #57cc9910 0%,transparent 60%),
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:auto,auto,48px 48px,48px 48px;
+  opacity:.5;pointer-events:none;
+}
+
+/* ── Layout ── */
+.page{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 24px 120px;}
+
+/* ── Nav ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,9,15,.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);padding:0 24px;
+}
+.nav-inner{
+  max-width:1120px;margin:0 auto;
+  display:flex;align-items:center;height:54px;overflow-x:auto;
+}
+.nav-inner::-webkit-scrollbar{display:none;}
+.nav-logo{
+  font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--accent);white-space:nowrap;margin-right:24px;flex-shrink:0;
+}
+.nav-link{
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.5px;
+  color:var(--muted);text-decoration:none;padding:0 14px;height:54px;
+  display:flex;align-items:center;border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;white-space:nowrap;flex-shrink:0;
+}
+.nav-link:hover{color:var(--text);border-bottom-color:var(--border2);}
+.nav-link.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── Hero ── */
+#hero{
+  padding:90px 0 70px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+@media(max-width:750px){#hero{grid-template-columns:1fr;gap:40px;padding:60px 0 40px;}}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Space Mono',monospace;font-size:11px;
+  color:var(--accent);border:1px solid #00b4d840;background:#00b4d808;
+  padding:5px 14px;border-radius:2px;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.hero-tag::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+h1.hero-title{
+  font-size:clamp(3rem,7vw,5.5rem);font-weight:800;
+  line-height:.95;letter-spacing:-3px;margin-bottom:20px;
+}
+h1.hero-title .blue{color:var(--accent);}
+h1.hero-title .dim {color:var(--muted2);}
+
+.hero-desc{color:var(--muted);font-size:1rem;line-height:1.7;max-width:420px;margin-bottom:32px;}
+.hero-meta{display:flex;gap:24px;flex-wrap:wrap;}
+.meta-item{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted2);}
+.meta-item strong{color:var(--text);display:block;font-size:13px;}
+
+.complexity-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px;}
+.complexity-box h3{
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+}
+.big-O{font-family:'Space Mono',monospace;font-size:3rem;font-weight:700;color:var(--accent2);line-height:1;margin-bottom:6px;}
+.big-O-note{font-size:.8rem;color:var(--muted);margin-bottom:20px;}
+.cplx-row{
+  display:flex;justify-content:space-between;padding:8px 0;
+  border-top:1px solid var(--border);
+  font-family:'Space Mono',monospace;font-size:12px;
+}
+.cplx-row span:first-child{color:var(--muted);}
+.cplx-row span:last-child{color:var(--accent2);font-weight:700;}
+
+/* ── Section headers ── */
+.section{padding:70px 0 0;}
+.section-tag{
+  font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;
+}
+.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:10px;}
+.section-title .dim{color:var(--muted2);}
+.section-sub{color:var(--muted);font-size:.95rem;max-width:600px;margin-bottom:36px;}
+
+/* ── Cards ── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;}
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:28px 24px;position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s;
+}
+.card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.card.bl::after{background:linear-gradient(90deg,var(--accent),#0090b0);}
+.card.or::after{background:linear-gradient(90deg,var(--accent2),#d4803a);}
+.card.rd::after{background:linear-gradient(90deg,var(--accent3),#b02030);}
+.card.gr::after{background:linear-gradient(90deg,var(--sorted),#35b07a);}
+.card.pk::after{background:linear-gradient(90deg,var(--minc),#c01070);}
+.card-icon{font-size:2rem;margin-bottom:14px;}
+.card h3{font-size:1rem;font-weight:700;margin-bottom:10px;}
+.card p{font-size:.84rem;color:var(--muted);line-height:1.65;font-family:'Space Mono',monospace;}
+.card p strong{color:var(--text);}
+.card-tag{
+  display:inline-block;margin-top:14px;font-family:'Space Mono',monospace;
+  font-size:10px;color:var(--muted2);letter-spacing:1px;
+  background:var(--card2);border:1px solid var(--border);padding:3px 10px;border-radius:3px;
+}
+
+/* ── Algo steps ── */
+.algo-steps{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+.algo-step{padding:28px 24px;border-right:1px solid var(--border);}
+.algo-step:last-child{border-right:none;}
+@media(max-width:700px){
+  .algo-steps{grid-template-columns:1fr 1fr;}
+  .algo-step:nth-child(2){border-right:none;}
+  .algo-step:nth-child(1),.algo-step:nth-child(2){border-bottom:1px solid var(--border);}
+}
+.step-n{font-family:'Space Mono',monospace;font-size:2.8rem;font-weight:700;color:var(--border2);line-height:1;margin-bottom:12px;}
+.algo-step h4{font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:8px;}
+.algo-step p{font-size:.82rem;color:var(--muted);line-height:1.65;font-family:'Space Mono',monospace;}
+.algo-step p code{color:var(--accent2);background:var(--card2);padding:1px 5px;border-radius:3px;font-size:.78rem;}
+
+/* ── Viz wrapper ── */
+.viz-wrapper{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.viz-header{
+  padding:18px 28px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.viz-header-title{font-size:1rem;font-weight:700;letter-spacing:-.3px;}
+.viz-header-title span{color:var(--accent);}
+.viz-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+
+button{
+  font-family:'Space Mono',monospace;font-size:11px;
+  padding:8px 18px;border-radius:5px;border:1px solid;
+  cursor:pointer;transition:all .15s;letter-spacing:.5px;
+}
+.btn-p{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700;}
+.btn-p:hover{background:#009bbd;}
+.btn-p:disabled{opacity:.35;cursor:default;}
+.btn-s{background:transparent;color:var(--text);border-color:var(--border2);}
+.btn-s:hover{border-color:#3a5060;background:var(--card);}
+
+.speed-wrap{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+input[type=range]{
+  -webkit-appearance:none;width:80px;height:3px;background:var(--border);
+  border-radius:2px;outline:none;border:none;padding:0;
+}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:pointer;}
+
+/* ── Flow body ── */
+.flow-body{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--border);}
+@media(max-width:820px){.flow-body{grid-template-columns:1fr;}}
+.flow-col{padding:24px 28px;border-right:1px solid var(--border);}
+.flow-col:last-child{border-right:none;}
+.flow-col-title{
+  font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;
+}
+
+/* Pseudocode interactive */
+.pseudo-block{font-family:'Space Mono',monospace;}
+.code-line{
+  display:flex;align-items:flex-start;gap:10px;
+  border-radius:5px;padding:3px 8px;
+  transition:background .3s;cursor:default;position:relative;line-height:2.1;
+}
+.code-line:hover{background:var(--card2);}
+.code-line.active{background:#00b4d818;box-shadow:inset 2px 0 0 var(--accent);}
+.code-line.active::before{content:'▶';position:absolute;left:-16px;color:var(--accent);font-size:9px;top:8px;}
+.ln{color:var(--muted2);min-width:20px;text-align:right;font-size:10px;padding-top:4px;user-select:none;flex-shrink:0;}
+.kw {color:#7ec8e3;}
+.fn {color:var(--accent2);}
+.cm {color:var(--muted2);font-style:italic;}
+.vr {color:var(--accent);}
+.nm {color:var(--sorted);}
+.op {color:var(--minc);}
+.indent1{padding-left:20px;}
+.indent2{padding-left:40px;}
+.indent3{padding-left:60px;}
+
+/* State panels */
+.state-panel{margin-bottom:16px;}
+.state-label{
+  font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:1px;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;
+}
+.state-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px;
+  font-family:'Space Mono',monospace;font-size:12px;
+}
+
+/* Mini bars */
+.mini-bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin-bottom:4px;}
+.mb-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.mb-val{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2);}
+.mb-bar{width:100%;border-radius:3px 3px 0 0;transition:height .25s cubic-bezier(.4,0,.2,1),background .2s;}
+.mb-idx{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2);}
+
+/* Cells row */
+.cells-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:24px;}
+.ac{
+  font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
+  min-width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--border);border-radius:5px;
+  background:var(--card2);transition:all .25s;position:relative;
+}
+.ac.srt{border-color:var(--sorted); background:#57cc9915;color:var(--sorted);}
+.ac.min{border-color:var(--minc);   background:#f7258515;color:var(--minc);}
+.ac.scn{border-color:var(--accent); background:#00b4d815;color:var(--accent);}
+.ac.swp{border-color:var(--accent2);background:#f4a26115;color:var(--accent2);}
+.ac.bnd{border-color:var(--accent2);}
+.ac-idx{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--muted2);}
+
+/* Pointer labels below cells */
+.ptr-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:22px;}
+.ptr-cell{
+  min-width:34px;text-align:center;
+  font-family:'Space Mono',monospace;font-size:9px;
+  transition:color .2s;
+}
+
+/* Var pills */
+.var-row{display:flex;gap:10px;flex-wrap:wrap;}
+.var-pill{
+  font-family:'Space Mono',monospace;font-size:12px;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:5px;padding:5px 12px;
+  transition:background .3s,border-color .3s,color .3s;
+}
+.var-pill.active{border-color:var(--accent);background:#00b4d814;color:var(--accent);}
+.var-pill.changed{border-color:var(--minc);background:#f7258514;color:var(--minc);animation:flashPill .5s ease;}
+.var-pill b{color:var(--muted);font-weight:400;}
+@keyframes flashPill{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* Explain bar */
+.explain-bar{
+  padding:16px 28px;border-top:1px solid var(--border);
+  font-size:.88rem;color:var(--muted);min-height:60px;line-height:1.7;
+  background:var(--card);
+}
+.explain-bar b   {color:var(--text);}
+.explain-bar .hl {color:var(--accent); font-weight:600;}
+.explain-bar .hl2{color:var(--accent2);font-weight:600;}
+.explain-bar .hlm{color:var(--minc);   font-weight:600;}
+.explain-bar .hls{color:var(--sorted); font-weight:600;}
+
+/* Legend */
+.legend{
+  display:flex;gap:20px;flex-wrap:wrap;padding:14px 28px;
+  font-family:'Space Mono',monospace;font-size:11px;
+  color:var(--muted);border-top:1px solid var(--border);
+}
+.leg-item{display:flex;align-items:center;gap:7px;}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+
+/* ── Classic visualizer ── */
+.classic-body{padding:28px;}
+.bars-area{min-height:210px;display:flex;align-items:flex-end;gap:6px;margin-bottom:6px;}
+.bar-col2{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+.bar-val2{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);transition:color .2s;}
+.bar2{width:100%;border-radius:4px 4px 0 0;transition:height .22s cubic-bezier(.4,0,.2,1),background .2s;}
+.bar-idx2{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted2);}
+
+/* Pointer row classic */
+.ptr-row-c{display:flex;gap:6px;margin-bottom:16px;}
+.ptr-cell-c{
+  flex:1;text-align:center;font-family:'Space Mono',monospace;
+  font-size:10px;transition:color .2s;min-height:16px;
+}
+
+/* Stats */
+.stats-row{
+  display:flex;gap:0;border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;margin-bottom:20px;
+}
+.stat-box{flex:1;padding:14px 18px;border-right:1px solid var(--border);font-family:'Space Mono',monospace;}
+.stat-box:last-child{border-right:none;}
+.stat-label{font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.stat-val{font-size:1.4rem;font-weight:700;color:var(--accent);}
+.stat-val.orange{color:var(--accent2);}
+.stat-val.pink  {color:var(--minc);}
+.stat-val.green {color:var(--sorted);}
+
+/* Array cells classic */
+.arr-disp{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.arr-cell{
+  font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--border);border-radius:5px;background:var(--card2);transition:all .2s;
+}
+.arr-cell.scn{border-color:var(--accent); color:var(--accent); background:#00b4d815;}
+.arr-cell.min{border-color:var(--minc);   color:var(--minc);   background:#f7258515;}
+.arr-cell.swp{border-color:var(--accent2);color:var(--accent2);background:#f4a26115;}
+.arr-cell.srt{border-color:var(--sorted); color:var(--sorted); background:#57cc9915;}
+
+/* Log */
+.log-wrap{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.log-wrap h4{
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;padding:11px 16px;border-bottom:1px solid var(--border);
+}
+.log-body{
+  padding:12px 16px;font-family:'Space Mono',monospace;
+  font-size:11px;line-height:1.85;max-height:150px;overflow-y:auto;color:var(--muted);
+}
+.log-body::-webkit-scrollbar{width:3px;}
+.log-body::-webkit-scrollbar-thumb{background:var(--border);}
+.ls{color:var(--text);}
+
+.step-expl-wrap{padding:0 28px 20px;}
+.step-expl-inner{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:16px 20px;font-size:.88rem;line-height:1.7;color:var(--muted);min-height:60px;
+}
+.step-expl-inner strong{color:var(--text);}
+.step-expl-inner .hl {color:var(--accent); font-weight:700;}
+.step-expl-inner .hl2{color:var(--accent2);font-weight:700;}
+.step-expl-inner .hlm{color:var(--minc);   font-weight:700;}
+.step-expl-inner .hls{color:var(--sorted); font-weight:700;}
+
+/* ── Pseudocode static ── */
+.pseudo-section{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.pseudo-header{
+  padding:14px 22px;border-bottom:1px solid var(--border);
+  font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
+  display:flex;gap:8px;align-items:center;
+}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot.r{background:#ff5f57}.dot.y{background:#ffbd2e}.dot.g{background:#28c840}
+pre{
+  padding:24px 28px;font-family:'Space Mono',monospace;
+  font-size:12px;line-height:2.1;overflow-x:auto;tab-size:2;
+}
+pre::-webkit-scrollbar{height:4px;}
+pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── Complexity ── */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.comp-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center;}
+.comp-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.comp-val{font-family:'Space Mono',monospace;font-size:1.9rem;font-weight:700;margin-bottom:10px;}
+.comp-desc{font-size:.78rem;color:var(--muted);font-family:'Space Mono',monospace;line-height:1.55;}
+
+/* ── VS table ── */
+.vs-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-family:'Space Mono',monospace;font-size:12px;}
+th{background:var(--card2);padding:12px 18px;text-align:left;color:var(--text);font-size:11px;border-bottom:1px solid var(--border);}
+td{padding:10px 18px;color:var(--muted);border-bottom:1px solid var(--border2);}
+td:first-child{color:var(--text);font-weight:700;}
+tr:last-child td{border-bottom:none;}
+.tg{color:var(--sorted);font-weight:700;}
+.tw{color:var(--accent2);font-weight:700;}
+.tb{color:var(--minc);font-weight:700;}
+
+/* ── Footer ── */
+footer{
+  border-top:1px solid var(--border);padding:40px 24px;
+  text-align:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted2);
+}
+footer a{color:var(--muted);text-decoration:none;}
+footer a:hover{color:var(--accent);}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <div class="badge">Algoritmos de Ordenación</div>
-    <h1>Selección<br><span>Ordenado.</span></h1>
-    <p class="subtitle">Aprende cómo el algoritmo de selección busca el mínimo en cada pasada y lo coloca en su posición correcta.</p>
-  </header>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">SELECCION.algo</span>
+    <a href="#concepto"     class="nav-link">Concepto</a>
+    <a href="#pasos"        class="nav-link">Pasos</a>
+    <a href="#flujo-datos"  class="nav-link">Flujo de datos</a>
+    <a href="#visualizador" class="nav-link">Visualizador</a>
+    <a href="#pseudocodigo" class="nav-link">Pseudocódigo</a>
+    <a href="#complejidad"  class="nav-link">Complejidad</a>
+    <a href="#comparacion"  class="nav-link">Comparación</a>
+  </div>
+</nav>
 
-  <!-- Concept cards -->
-  <div class="concept-row">
-    <div class="concept-card blue">
-      <div class="concept-icon">🔍</div>
-      <h3>La idea central</h3>
-      <p>En cada pasada, <strong>busca el elemento más pequeño</strong> del tramo sin ordenar y lo coloca al inicio de ese tramo.</p>
-    </div>
-    <div class="concept-card orange">
-      <div class="concept-icon">🔄</div>
-      <h3>Intercambios mínimos</h3>
-      <p>Solo hace <strong>n-1 intercambios</strong> como máximo, uno por pasada. Mucho menos que burbuja en datos desordenados.</p>
-    </div>
-    <div class="concept-card red">
-      <div class="concept-icon">📊</div>
-      <h3>Complejidad fija</h3>
-      <p>Siempre hace <strong>O(n²) comparaciones</strong>, sin importar si el array está casi ordenado. No hay optimización posible.</p>
-    </div>
-    <div class="concept-card green">
-      <div class="concept-icon">🧠</div>
-      <h3>¿Dónde se usa?</h3>
-      <p>Útil cuando las <strong>escrituras en memoria son costosas</strong> (flash, EEPROM). Minimiza intercambios al máximo.</p>
+<div class="page">
+
+<!-- HERO -->
+<section id="hero">
+  <div>
+    <div class="hero-tag">Algoritmos · Ordenación</div>
+    <h1 class="hero-title">Orde<span class="blue">na</span><span class="dim">ción</span><br><span class="dim">por</span><br>Selección</h1>
+    <p class="hero-desc">
+      En cada pasada busca el elemento mínimo del tramo no ordenado y lo coloca en su posición definitiva. Solo n-1 intercambios en total — su gran ventaja sobre burbuja.
+    </p>
+    <div class="hero-meta">
+      <div class="meta-item"><strong>Comparación</strong>Tipo</div>
+      <div class="meta-item"><strong>O(n²)</strong>Siempre</div>
+      <div class="meta-item"><strong>O(n)</strong>Intercambios</div>
+      <div class="meta-item"><strong>No estable</strong>Propiedad</div>
     </div>
   </div>
+  <div class="complexity-box">
+    <h3>Resumen de complejidad</h3>
+    <div class="big-O">O(n²)</div>
+    <div class="big-O-note">igual en todos los casos — sin optimización</div>
+    <div class="cplx-row"><span>Mejor caso</span><span style="color:var(--accent2)">O(n²)</span></div>
+    <div class="cplx-row"><span>Caso medio</span><span>O(n²)</span></div>
+    <div class="cplx-row"><span>Peor caso</span><span>O(n²)</span></div>
+    <div class="cplx-row"><span>Intercambios máx.</span><span style="color:var(--sorted)">O(n)</span></div>
+    <div class="cplx-row"><span>Espacio extra</span><span style="color:var(--accent)">O(1)</span></div>
+    <div class="cplx-row"><span>¿Estable?</span><span style="color:var(--minc)">No</span></div>
+  </div>
+</section>
 
-  <!-- How it works -->
-  <div class="steps-section">
-    <h2>¿Cómo <span>funciona</span>?</h2>
-    <div class="step-cards">
-      <div class="step-item">
-        <div class="step-num">01</div>
-        <h4>Posición actual</h4>
-        <p>Fija una posición i (empieza en 0). El objetivo es encontrar qué elemento debería ir aquí.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-num">02</div>
-        <h4>Buscar el mínimo</h4>
-        <p>Escanea todo el tramo [i..n-1] para encontrar el índice del elemento más pequeño.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-num">03</div>
-        <h4>Intercambiar</h4>
-        <p>Si el mínimo no estaba ya en la posición i, intercambia arr[i] con arr[min]. Un solo intercambio.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-num">04</div>
-        <h4>Avanzar</h4>
-        <p>La posición i queda fijada para siempre. Avanza i y repite hasta cubrir todo el array.</p>
-      </div>
+<!-- CONCEPTO -->
+<section id="concepto" class="section">
+  <div class="section-tag">01 · Fundamentos</div>
+  <h2 class="section-title">¿Qué es y <span class="dim">por qué importa?</span></h2>
+  <p class="section-sub">Cuatro ideas clave que definen el algoritmo de selección y lo diferencian de los demás.</p>
+  <div class="cards-grid">
+    <div class="card bl">
+      <div class="card-icon">🔍</div>
+      <h3>La idea central: buscar el mínimo</h3>
+      <p>En cada pasada, <strong>escanea todo el tramo no ordenado</strong> [i..n-1] para encontrar el índice del elemento más pequeño. Luego lo mueve a la posición <code>i</code> con un único intercambio.</p>
+      <span class="card-tag">SELECCIÓN DE MÍNIMO</span>
+    </div>
+    <div class="card or">
+      <div class="card-icon">🔄</div>
+      <h3>Solo n-1 intercambios</h3>
+      <p>Su ventaja clave: hace <strong>como máximo n-1 intercambios</strong> — uno por pasada, solo cuando el mínimo no está ya en su sitio. Ideal cuando escribir en memoria es costoso (flash, EEPROM).</p>
+      <span class="card-tag">ESCRITURAS MÍNIMAS</span>
+    </div>
+    <div class="card rd">
+      <div class="card-icon">📊</div>
+      <h3>Sin optimización posible</h3>
+      <p>A diferencia de burbuja, <strong>no puede parar antes</strong>. Aunque el array ya esté ordenado, sigue haciendo las n(n-1)/2 comparaciones. Su complejidad es fija en todos los casos.</p>
+      <span class="card-tag">COMPLEJIDAD CONSTANTE</span>
+    </div>
+    <div class="card pk">
+      <div class="card-icon">⚠️</div>
+      <h3>No es estable</h3>
+      <p>El intercambio puede cambiar el <strong>orden relativo de elementos iguales</strong>. Ejemplo: en [3a, 3b, 1], el 1 se intercambia con 3a, quedando [1, 3b, 3a] — el orden de los 3 se invirtió.</p>
+      <span class="card-tag">INESTABILIDAD</span>
     </div>
   </div>
+</section>
 
-  <!-- Interactive demo -->
-  <div class="demo-section">
-    <div class="demo-header">
-      <h2>🎮 Visualización Interactiva</h2>
-      <div class="controls">
-        <div class="speed-wrap">
-          Vel.
-          <input type="range" id="speedSlider" min="100" max="1400" value="700" step="100">
+<!-- PASOS -->
+<section id="pasos" class="section">
+  <div class="section-tag">02 · Mecánica</div>
+  <h2 class="section-title">Los 4 pasos <span class="dim">del algoritmo</span></h2>
+  <p class="section-sub">El bucle exterior fija posiciones, el interior busca. Así se combinan para ordenar.</p>
+  <div class="algo-steps">
+    <div class="algo-step">
+      <div class="step-n">01</div>
+      <h4>Fijar posición i</h4>
+      <p>El bucle exterior controla la posición <code>i</code> que se va a rellenar (de 0 a n-2). Todo lo anterior a <code>i</code> ya está ordenado definitivamente.</p>
+    </div>
+    <div class="algo-step">
+      <div class="step-n">02</div>
+      <h4>Asumir mínimo en i</h4>
+      <p>Al inicio de cada pasada, <code>idx_min = i</code>. Asumimos provisionalmente que el mínimo ya está en la posición actual. El escaneo puede actualizarlo.</p>
+    </div>
+    <div class="algo-step">
+      <div class="step-n">03</div>
+      <h4>Escanear [i+1..n-1]</h4>
+      <p>El bucle interior compara cada elemento con <code>arr[idx_min]</code>. Si encuentra algo menor, actualiza <code>idx_min = j</code>. Al final, <code>idx_min</code> apunta al mínimo real.</p>
+    </div>
+    <div class="algo-step">
+      <div class="step-n">04</div>
+      <h4>Intercambiar si hace falta</h4>
+      <p>Solo intercambia si <code>idx_min ≠ i</code>. Si el mínimo ya estaba en <code>i</code>, no hace nada. Esto garantiza que los intercambios sean siempre los mínimos posibles.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FLUJO DE DATOS -->
+<section id="flujo-datos" class="section">
+  <div class="section-tag">03 · Visualización detallada</div>
+  <h2 class="section-title">Flujo de datos <span class="dim">línea a línea</span></h2>
+  <p class="section-sub">Observa qué línea se ejecuta y cómo cambian <code>i</code>, <code>j</code>, <code>idx_min</code> y el array en cada paso.</p>
+
+  <div class="viz-wrapper">
+    <div class="viz-header">
+      <div class="viz-header-title">🔬 Trazado <span>paso a paso</span></div>
+      <div class="viz-controls">
+        <div class="speed-wrap">vel. <input type="range" id="fSp" min="100" max="1600" value="800" step="100"></div>
+        <button class="btn-s" id="f-shuffle">🔀 Mezclar</button>
+        <button class="btn-s" id="f-reset">↺ Reset</button>
+        <button class="btn-p" id="f-step">Paso →</button>
+        <button class="btn-p" id="f-auto">▶ Auto</button>
+        <span id="f-ctr" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">paso 0</span>
+      </div>
+    </div>
+
+    <div class="flow-body">
+      <!-- LEFT: pseudocode -->
+      <div class="flow-col">
+        <div class="flow-col-title">Línea ejecutándose ahora</div>
+        <div class="pseudo-block" id="pseudoBlock">
+          <div class="code-line" data-l="init"><span class="ln">1</span><span><span class="vr">n</span> = longitud(<span class="vr">arr</span>)</span></div>
+          <div class="code-line" data-l="outer"><span class="ln">2</span><span><span class="kw">para</span> <span class="vr">i</span> <span class="kw">desde</span> <span class="nm">0</span> <span class="kw">hasta</span> <span class="vr">n</span><span class="op">-2</span>:</span></div>
+          <div class="code-line indent1" data-l="assume"><span class="ln">3</span><span><span class="vr">idx_min</span> = <span class="vr">i</span>   <span class="cm">// asumir mínimo en i</span></span></div>
+          <div class="code-line indent1" data-l="inner"><span class="ln">4</span><span><span class="kw">para</span> <span class="vr">j</span> <span class="kw">desde</span> <span class="vr">i</span><span class="op">+1</span> <span class="kw">hasta</span> <span class="vr">n</span><span class="op">-1</span>:</span></div>
+          <div class="code-line indent2" data-l="cmp"><span class="ln">5</span><span><span class="kw">si</span> <span class="vr">arr</span>[<span class="vr">j</span>] <span class="op">&lt;</span> <span class="vr">arr</span>[<span class="vr">idx_min</span>]:</span></div>
+          <div class="code-line indent3" data-l="update"><span class="ln">6</span><span><span class="vr">idx_min</span> = <span class="vr">j</span>   <span class="cm">// nuevo mínimo</span></span></div>
+          <div class="code-line indent1" data-l="check"><span class="ln">7</span><span><span class="kw">si</span> <span class="vr">idx_min</span> <span class="op">≠</span> <span class="vr">i</span>:   <span class="cm">// ¿hace falta intercambiar?</span></span></div>
+          <div class="code-line indent2" data-l="swp1"><span class="ln">8</span><span><span class="vr">temp</span> = <span class="vr">arr</span>[<span class="vr">i</span>]</span></div>
+          <div class="code-line indent2" data-l="swp2"><span class="ln">9</span><span><span class="vr">arr</span>[<span class="vr">i</span>] = <span class="vr">arr</span>[<span class="vr">idx_min</span>]</span></div>
+          <div class="code-line indent2" data-l="swp3"><span class="ln">10</span><span><span class="vr">arr</span>[<span class="vr">idx_min</span>] = <span class="vr">temp</span></span></div>
+          <div class="code-line" data-l="done"><span class="ln">11</span><span><span class="kw">devolver</span> <span class="vr">arr</span></span></div>
         </div>
-        <button class="btn-secondary" id="btnShuffle">🔀 Mezclar</button>
-        <button class="btn-secondary" id="btnReset">↺ Reset</button>
-        <button class="btn-primary" id="btnStep">Paso →</button>
-        <button class="btn-primary" id="btnAuto">▶ Auto</button>
+      </div>
+
+      <!-- RIGHT: state -->
+      <div class="flow-col">
+        <div class="flow-col-title">Estado de las variables</div>
+
+        <div class="state-panel">
+          <div class="state-label">Array — barras en tiempo real</div>
+          <div class="mini-bars" id="fMiniB"></div>
+          <div class="cells-row" id="fCells"></div>
+          <div class="ptr-row"   id="fPtrs"></div>
+        </div>
+
+        <div class="state-panel" style="margin-top:24px">
+          <div class="state-label">Índices</div>
+          <div class="var-row">
+            <div class="var-pill" id="fvN"><b>n =</b> 7</div>
+            <div class="var-pill" id="fvI"><b>i =</b> —</div>
+            <div class="var-pill" id="fvJ"><b>j =</b> —</div>
+            <div class="var-pill" id="fvMin"><b>idx_min =</b> —</div>
+          </div>
+        </div>
+
+        <div class="state-panel">
+          <div class="state-label">Valores en esas posiciones</div>
+          <div class="var-row">
+            <div class="var-pill" id="fvAI"><b>arr[i] =</b> —</div>
+            <div class="var-pill" id="fvAJ"><b>arr[j] =</b> —</div>
+            <div class="var-pill" id="fvAM"><b>arr[idx_min] =</b> —</div>
+            <div class="var-pill" id="fvTemp"><b>temp =</b> —</div>
+          </div>
+        </div>
+
+        <div class="state-panel">
+          <div class="state-label">Contadores</div>
+          <div class="var-row">
+            <div class="var-pill" id="fvPass"><b>pasada =</b> 0</div>
+            <div class="var-pill" id="fvComp"><b>comps =</b> 0</div>
+            <div class="var-pill" id="fvSwap"><b>swaps =</b> 0</div>
+            <div class="var-pill" id="fvSorted"><b>fijados =</b> 0</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="bars-wrap" id="barsWrap"></div>
-
-    <!-- Pointer labels -->
-    <div class="pointer-row" id="pointerRow"></div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-label">Comparaciones</div>
-        <div class="stat-val" id="statComp">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Intercambios</div>
-        <div class="stat-val orange" id="statSwap">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Pasada</div>
-        <div class="stat-val red" id="statPass">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Ordenados</div>
-        <div class="stat-val green" id="statSorted">0</div>
-      </div>
+    <div class="explain-bar" id="fExplain">
+      Pulsa <b>Paso →</b> para seguir la ejecución línea a línea y ver cómo cambia cada variable.
     </div>
 
-    <!-- Array cells -->
-    <div style="padding: 16px 28px 0; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">Array actual</div>
-    <div class="array-display" id="arrayDisplay"></div>
-
-    <!-- Legend -->
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--min-color)"></div> Mínimo actual</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> Escaneando</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div> Intercambiando</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--sorted)"></div> Ordenado (fijo)</div>
-    </div>
-
-    <div class="step-explain" id="stepExplain">
-      Pulsa <strong>Paso →</strong> para ver cómo se busca el mínimo en cada pasada, o <strong>▶ Auto</strong> para la animación completa.
+      <div class="leg-item"><div class="leg-dot" style="background:var(--minc)"></div>Mínimo actual (idx_min)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Escaneando (j)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent2)"></div>Intercambiando</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--sorted)"></div>Ordenado (fijo)</div>
     </div>
   </div>
+</section>
 
-  <!-- Complexity -->
-  <div style="margin-bottom: 20px;">
-    <h2 style="font-size:1.4rem; font-weight:800; letter-spacing:-1px; margin-bottom:20px;">Complejidad <span style="color:var(--accent)">temporal</span></h2>
+<!-- VISUALIZADOR CLÁSICO -->
+<section id="visualizador" class="section">
+  <div class="section-tag">04 · Visualizador clásico</div>
+  <h2 class="section-title">Barras <span class="dim">y estadísticas</span></h2>
+  <p class="section-sub">Vista completa: barras grandes, punteros de posición, estadísticas y log de operaciones.</p>
+
+  <div class="viz-wrapper">
+    <div class="viz-header">
+      <div class="viz-header-title">🎮 Simulación interactiva</div>
+      <div class="viz-controls">
+        <div class="speed-wrap">vel. <input type="range" id="cSp" min="100" max="1400" value="700" step="100"></div>
+        <button class="btn-s" id="c-shuffle">🔀 Mezclar</button>
+        <button class="btn-s" id="c-reset">↺ Reset</button>
+        <button class="btn-p" id="c-step">Paso →</button>
+        <button class="btn-p" id="c-auto">▶ Auto</button>
+      </div>
+    </div>
+
+    <div class="classic-body">
+      <div class="bars-area"  id="cBars"></div>
+      <div class="ptr-row-c"  id="cPtrs"></div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-label">Comparaciones</div><div class="stat-val" id="cComp">0</div></div>
+        <div class="stat-box"><div class="stat-label">Intercambios</div><div class="stat-val orange" id="cSwap">0</div></div>
+        <div class="stat-box"><div class="stat-label">Pasada</div><div class="stat-val pink" id="cPass">0</div></div>
+        <div class="stat-box"><div class="stat-label">Ordenados</div><div class="stat-val green" id="cSorted">0</div></div>
+      </div>
+
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Array actual</div>
+      <div class="arr-disp" id="cCells"></div>
+
+      <div class="log-wrap">
+        <h4>📋 Log de operaciones</h4>
+        <div class="log-body" id="cLog"></div>
+      </div>
+    </div>
+
+    <div class="step-expl-wrap">
+      <div class="step-expl-inner" id="cExplain">
+        Pulsa <strong>Paso →</strong> para ver cómo se busca el mínimo en cada pasada.
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--minc)"></div>Mínimo actual</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Escaneando</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent2)"></div>Intercambiando</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--sorted)"></div>Ordenado (fijo)</div>
+    </div>
   </div>
-  <div class="complexity-row">
+</section>
+
+<!-- PSEUDOCÓDIGO -->
+<section id="pseudocodigo" class="section">
+  <div class="section-tag">05 · Código</div>
+  <h2 class="section-title">Pseudocódigo <span class="dim">completo</span></h2>
+  <p class="section-sub">Implementación canónica con anotaciones en cada bloque lógico.</p>
+
+  <div class="pseudo-section">
+    <div class="pseudo-header">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      &nbsp;&nbsp; seleccion.pseudo &nbsp;—&nbsp; versión con intercambio condicional
+    </div>
+    <pre><span style="color:#7ec8e3">función</span> <span style="color:var(--accent2)">seleccion</span>(arr):
+  n = longitud(arr)
+
+  <span style="color:var(--muted2);font-style:italic">// ── Bucle exterior: n-1 pasadas, una por posición ────────────────────</span>
+  <span style="color:#7ec8e3">para</span> i <span style="color:#7ec8e3">desde</span> <span style="color:var(--sorted)">0</span> <span style="color:#7ec8e3">hasta</span> n<span style="color:var(--minc)">-2</span>:
+
+    <span style="color:var(--muted2);font-style:italic">// ── Asumir que el mínimo está en la posición i ───────────────────</span>
+    idx_min = i
+
+    <span style="color:var(--muted2);font-style:italic">// ── Escanear el tramo no ordenado para encontrar el mínimo real ──</span>
+    <span style="color:#7ec8e3">para</span> j <span style="color:#7ec8e3">desde</span> i<span style="color:var(--minc)">+1</span> <span style="color:#7ec8e3">hasta</span> n<span style="color:var(--minc)">-1</span>:
+      <span style="color:#7ec8e3">si</span> arr[j] <span style="color:var(--minc)">&lt;</span> arr[idx_min]:
+        idx_min = j         <span style="color:var(--muted2);font-style:italic">// actualizar índice del mínimo</span>
+
+    <span style="color:var(--muted2);font-style:italic">// ── Intercambiar solo si el mínimo no estaba ya en i ─────────────</span>
+    <span style="color:#7ec8e3">si</span> idx_min <span style="color:var(--minc)">≠</span> i:
+      temp          = arr[i]
+      arr[i]        = arr[idx_min]
+      arr[idx_min]  = temp
+
+  <span style="color:#7ec8e3">devolver</span> arr
+
+
+<span style="color:var(--muted2);font-style:italic">// ── Reconstruir el camino del mínimo por pasada ──────────────────────</span>
+<span style="color:var(--muted2);font-style:italic">// Pasada 1: min=[64,25,12,22,11,90,38] → 11 (idx 4) → swap con pos 0</span>
+<span style="color:var(--muted2);font-style:italic">// Pasada 2: min=[25,12,22,64,90,38]    → 12 (idx 1) → swap con pos 1 (no hace falta)</span>
+<span style="color:var(--muted2);font-style:italic">// Pasada 3: min=[22,64,90,38]          → 22 (idx 0) → ya en su sitio</span>
+<span style="color:var(--muted2);font-style:italic">// ...</span></pre>
+  </div>
+</section>
+
+<!-- COMPLEJIDAD -->
+<section id="complejidad" class="section">
+  <div class="section-tag">06 · Análisis</div>
+  <h2 class="section-title">Complejidad <span class="dim">temporal y espacial</span></h2>
+  <p class="section-sub">Por qué tiene complejidad constante y cuándo eso es una ventaja.</p>
+
+  <div class="comp-grid" style="margin-bottom:24px">
     <div class="comp-card">
       <div class="comp-label">Mejor caso</div>
       <div class="comp-val" style="color:var(--accent2)">O(n²)</div>
-      <div class="comp-desc">Incluso con el array ya ordenado, sigue buscando el mínimo en cada pasada. Sin optimización.</div>
+      <div class="comp-desc">Aunque el array esté ordenado, sigue comparando todos los pares. No hay forma de detectarlo sin comparar.</div>
     </div>
     <div class="comp-card">
       <div class="comp-label">Caso medio</div>
       <div class="comp-val" style="color:var(--accent2)">O(n²)</div>
-      <div class="comp-desc">Siempre hace n·(n-1)/2 comparaciones sin importar el estado inicial del array.</div>
+      <div class="comp-desc">Siempre realiza exactamente n(n-1)/2 comparaciones. Con n=7: 21 comparaciones fijas.</div>
     </div>
     <div class="comp-card">
       <div class="comp-label">Peor caso</div>
       <div class="comp-val" style="color:var(--accent2)">O(n²)</div>
-      <div class="comp-desc">Igual que el mejor. La complejidad es constante en todos los casos.</div>
+      <div class="comp-desc">Idéntico al mejor. La complejidad de comparaciones es siempre cuadrática, sin excepción.</div>
     </div>
     <div class="comp-card">
       <div class="comp-label">Intercambios</div>
       <div class="comp-val" style="color:var(--sorted)">O(n)</div>
-      <div class="comp-desc">Solo n-1 intercambios máximo. Su gran ventaja frente a burbuja.</div>
+      <div class="comp-desc">Máximo n-1 intercambios — uno por pasada, solo cuando es necesario. Su gran ventaja sobre burbuja.</div>
     </div>
   </div>
 
-  <!-- VS Burbuja -->
-  <div class="vs-section">
-    <div class="vs-header">Selección <span>vs</span> Burbuja</div>
-    <table class="vs-table">
-      <thead><tr><th>Característica</th><th>Selección</th><th>Burbuja</th></tr></thead>
+  <div class="section-tag" style="margin-top:40px;margin-bottom:10px">Cuándo usarlo</div>
+  <div class="cards-grid">
+    <div class="card gr">
+      <div class="card-icon">✅</div>
+      <h3>Cuándo SÍ usar selección</h3>
+      <p>
+        — Memoria flash / EEPROM (escrituras costosas)<br>
+        — Arrays pequeños donde el código simple importa<br>
+        — Cuando necesitas exactamente n-1 intercambios<br>
+        — Aprender la diferencia entre comparaciones e intercambios<br>
+        — Sistemas embebidos con restricciones de escritura
+      </p>
+    </div>
+    <div class="card rd">
+      <div class="card-icon">❌</div>
+      <h3>Cuándo NO usar selección</h3>
+      <p>
+        — Arrays grandes (n &gt; 1000)<br>
+        — Cuando necesites estabilidad (usa MergeSort)<br>
+        — Arrays casi ordenados (usa Inserción o Burbuja)<br>
+        — Cuando la velocidad total importa más que los intercambios<br>
+        — Producción con datos de tamaño variable
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARACIÓN -->
+<section id="comparacion" class="section">
+  <div class="section-tag">07 · Contexto</div>
+  <h2 class="section-title">Comparación con <span class="dim">otros algoritmos</span></h2>
+  <p class="section-sub">Selección frente a los algoritmos de ordenación más comunes.</p>
+
+  <div class="vs-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Algoritmo</th>
+          <th>Mejor</th>
+          <th>Medio</th>
+          <th>Peor</th>
+          <th>Intercambios</th>
+          <th>Estable</th>
+          <th>Nota</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr><td>Comparaciones</td><td>Siempre n²/2</td><td>Varía (puede parar antes)</td></tr>
-        <tr><td>Intercambios</td><td>Máx. n-1 ✅</td><td>Puede llegar a n²/2</td></tr>
-        <tr><td>Mejor caso</td><td>O(n²)</td><td>O(n) con optimización ✅</td></tr>
-        <tr><td>Estable</td><td>No ❌</td><td>Sí ✅</td></tr>
-        <tr><td>Ideal para</td><td>Minimizar escrituras</td><td>Detectar array ordenado</td></tr>
+        <tr>
+          <td>Selección</td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tg">O(n)</span></td>
+          <td><span class="tb">No</span></td>
+          <td>Mínimos intercambios</td>
+        </tr>
+        <tr>
+          <td>Burbuja</td>
+          <td><span class="tg">O(n)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tg">Sí</span></td>
+          <td>Detecta array ordenado</td>
+        </tr>
+        <tr>
+          <td>Inserción</td>
+          <td><span class="tg">O(n)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tg">Sí</span></td>
+          <td>Mejor en práctica para datos pequeños</td>
+        </tr>
+        <tr>
+          <td>MergeSort</td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tw">O(n log n)</span></td>
+          <td><span class="tg">Sí</span></td>
+          <td>Garantizado, usa O(n) extra</td>
+        </tr>
+        <tr>
+          <td>QuickSort</td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tw">O(n²)</span></td>
+          <td><span class="tg">O(log n)</span></td>
+          <td><span class="tb">No</span></td>
+          <td>Más rápido en práctica</td>
+        </tr>
+        <tr>
+          <td>HeapSort</td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tg">O(n log n)</span></td>
+          <td><span class="tb">No</span></td>
+          <td>Óptimo tiempo + O(1) espacio</td>
+        </tr>
       </tbody>
     </table>
   </div>
-
-  <!-- Pseudocode -->
-  <div class="pseudo-section">
-    <div class="pseudo-header">
-      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-      &nbsp;&nbsp; seleccion.pseudo
-    </div>
-    <pre><span class="kw">función</span> <span class="fn">seleccion</span>(arr):
-  n = longitud(arr)
-
-  <span class="kw">para</span> <span class="var">i</span> <span class="kw">desde</span> <span class="num">0</span> <span class="kw">hasta</span> n<span class="op">-2</span>:          <span class="cm">// posición a rellenar</span>
-    <span class="var">idx_min</span> = <span class="var">i</span>                        <span class="cm">// asume que el mínimo está en i</span>
-
-    <span class="kw">para</span> <span class="var">j</span> <span class="kw">desde</span> <span class="var">i</span><span class="op">+1</span> <span class="kw">hasta</span> n<span class="op">-1</span>:      <span class="cm">// escanea el resto</span>
-      <span class="kw">si</span> arr[<span class="var">j</span>] <span class="op">&lt;</span> arr[<span class="var">idx_min</span>]:
-        <span class="var">idx_min</span> = <span class="var">j</span>                   <span class="cm">// nuevo mínimo encontrado</span>
-
-    <span class="kw">si</span> <span class="var">idx_min</span> <span class="op">≠</span> <span class="var">i</span>:                  <span class="cm">// solo intercambia si hace falta</span>
-      temp          = arr[<span class="var">i</span>]
-      arr[<span class="var">i</span>]       = arr[<span class="var">idx_min</span>]
-      arr[<span class="var">idx_min</span>] = temp
-
-  <span class="kw">devolver</span> arr</pre>
-  </div>
+</section>
 
 </div>
 
-<script>
-// ─── Data ─────────────────────────────────────────────────────────────────────
-const DEFAULT_ARR = [64, 25, 12, 22, 11, 90, 38];
-let arr = [...DEFAULT_ARR];
+<footer>
+  <div style="max-width:1120px;margin:0 auto">
+    <p style="margin-bottom:8px">
+      Guía de referencia — Algoritmo de Ordenación por Selección &nbsp;·&nbsp;
+      <a href="https://es.wikipedia.org/wiki/Ordenamiento_por_selecci%C3%B3n" target="_blank">Wikipedia</a>
+    </p>
+    <p>UNIR — Grado en Ciberseguridad &nbsp;·&nbsp; Algoritmos y Estructuras de Datos</p>
+  </div>
+</footer>
 
-// ─── Generator ────────────────────────────────────────────────────────────────
-function* selectionGen(inputArr) {
-  const a = [...inputArr];
-  const n = a.length;
-  let comparisons = 0, swaps = 0;
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+'use strict';
+
+const DEFAULT_ARR = [64,25,12,22,11,90,38];
+const POOL = [11,12,22,25,34,38,45,55,64,78,90,5];
+
+function shuffle(src){ return [...src].sort(()=>Math.random()-.5).slice(0,7); }
+
+// ── Generator ──────────────────────────────────────────────────────────────
+function* selGen(input) {
+  const a=[...input], n=a.length;
+  let comps=0, swaps=0;
 
   yield {
-    arr: [...a], boundary: 0, scanning: -1, minIdx: -1, swapping: [],
-    sortedUntil: 0, comparisons, swaps, pass: 0,
-    msg: `Iniciamos con el array: <strong>[${a.join(', ')}]</strong>. Haremos <strong>${n-1} pasadas</strong>, una por posición.`
+    lines:['init'], arr:[...a], boundary:0, scanning:-1, minIdx:-1, swapping:[],
+    sortedUntil:0, i:null, j:null, temp:null, comps, swaps, pass:0,
+    msg:`<b>Línea 1:</b> <span class="hl">n = ${n}</span>. Haremos <span class="hl2">${n-1} pasadas</span>. En cada una, fijamos un elemento en su posición definitiva. Array: <b>[${a.join(', ')}]</b>`
   };
 
-  for (let i = 0; i < n - 1; i++) {
-    let minIdx = i;
-
+  for(let i=0; i<n-1; i++){
     yield {
-      arr: [...a], boundary: i, scanning: -1, minIdx: i, swapping: [],
-      sortedUntil: i, comparisons, swaps, pass: i + 1,
-      msg: `<span class="hl">Pasada ${i+1}</span>: posición <strong>${i}</strong> libre. Asumo que el mínimo es <span class="hlm">arr[${i}]=${a[i]}</span>. Voy a buscar si hay algo más pequeño en [${i+1}..${n-1}].`
+      lines:['outer'], arr:[...a], boundary:i, scanning:-1, minIdx:i, swapping:[],
+      sortedUntil:i, i, j:null, temp:null, comps, swaps, pass:i+1,
+      msg:`<b>Línea 2:</b> Pasada <span class="hl2">${i+1}</span>. Posición <b>${i}</b> libre. Los primeros <b>${i}</b> elemento${i===1?'':'s'} ya están fijados definitivamente.`
     };
 
-    for (let j = i + 1; j < n; j++) {
-      comparisons++;
+    let minIdx=i;
+    yield {
+      lines:['assume'], arr:[...a], boundary:i, scanning:-1, minIdx:i, swapping:[],
+      sortedUntil:i, i, j:null, temp:null, comps, swaps, pass:i+1,
+      msg:`<b>Línea 3:</b> Asumimos <span class="hlm">idx_min = ${i}</span> (arr[${i}] = ${a[i]}). Escaneamos desde j=${i+1} para ver si hay algo menor.`
+    };
 
+    for(let j=i+1; j<n; j++){
+      comps++;
       yield {
-        arr: [...a], boundary: i, scanning: j, minIdx, swapping: [],
-        sortedUntil: i, comparisons, swaps, pass: i + 1,
-        msg: `Comparo <span class="hl">arr[${j}]=${a[j]}</span> con el mínimo actual <span class="hlm">arr[${minIdx}]=${a[minIdx]}</span>. ¿Es ${a[j]} < ${a[minIdx]}? <strong>${a[j] < a[minIdx] ? '¡Sí! Nuevo mínimo.' : 'No. El mínimo sigue siendo ' + a[minIdx] + '.'}</strong>`
+        lines:['inner','cmp'], arr:[...a], boundary:i, scanning:j, minIdx, swapping:[],
+        sortedUntil:i, i, j, temp:null, comps, swaps, pass:i+1,
+        msg:`<b>Líneas 4–5:</b> j=${j}. Comparamos <span class="hl">arr[${j}]=${a[j]}</span> con <span class="hlm">arr[idx_min=${minIdx}]=${a[minIdx]}</span>. ¿${a[j]} < ${a[minIdx]}? → <b>${a[j]<a[minIdx]?'<span class="hlm">SÍ → nuevo mínimo</span>':'<span class="hls">NO → idx_min no cambia</span>'}</b>`
       };
-
-      if (a[j] < a[minIdx]) {
-        minIdx = j;
+      if(a[j]<a[minIdx]){
+        minIdx=j;
         yield {
-          arr: [...a], boundary: i, scanning: j, minIdx, swapping: [],
-          sortedUntil: i, comparisons, swaps, pass: i + 1,
-          msg: `🔎 Nuevo mínimo encontrado: <span class="hlm">arr[${minIdx}]=${a[minIdx]}</span>. Sigo escaneando el resto...`
+          lines:['update'], arr:[...a], boundary:i, scanning:j, minIdx, swapping:[],
+          sortedUntil:i, i, j, temp:null, comps, swaps, pass:i+1,
+          msg:`<b>Línea 6:</b> <span class="hlm">idx_min = ${j}</span>. Nuevo mínimo provisional: arr[${j}] = ${a[minIdx]}. Continúo escaneando...`
         };
       }
     }
 
-    if (minIdx !== i) {
-      yield {
-        arr: [...a], boundary: i, scanning: -1, minIdx, swapping: [i, minIdx],
-        sortedUntil: i, comparisons, swaps, pass: i + 1,
-        msg: `El mínimo del tramo es <span class="hlm">${a[minIdx]}</span> (índice ${minIdx}). Lo intercambio con <span class="hl2">arr[${i}]=${a[i]}</span>.`
-      };
+    yield {
+      lines:['check'], arr:[...a], boundary:i, scanning:-1, minIdx, swapping:[],
+      sortedUntil:i, i, j:null, temp:null, comps, swaps, pass:i+1,
+      msg:`<b>Línea 7:</b> Escaneo terminado. <span class="hlm">idx_min = ${minIdx}</span> (valor ${a[minIdx]}). ¿idx_min (${minIdx}) ≠ i (${i})? → <b>${minIdx!==i?'<span class="hl2">SÍ, intercambiamos</span>':'<span class="hls">NO, ya estaba en su sitio</span>'}</b>`
+    };
 
-      [a[i], a[minIdx]] = [a[minIdx], a[i]];
-      swaps++;
+    if(minIdx!==i){
+      const t=a[i];
+      yield {
+        lines:['swp1'], arr:[...a], boundary:i, scanning:-1, minIdx, swapping:[i,minIdx],
+        sortedUntil:i, i, j:null, temp:t, comps, swaps, pass:i+1,
+        msg:`<b>Línea 8:</b> <span class="hl2">temp = arr[${i}] = ${t}</span>. Guardamos el valor que va a ser sobreescrito.`
+      };
+      a[i]=a[minIdx];
+      yield {
+        lines:['swp2'], arr:[...a], boundary:i, scanning:-1, minIdx, swapping:[i,minIdx],
+        sortedUntil:i, i, j:null, temp:t, comps, swaps, pass:i+1,
+        msg:`<b>Línea 9:</b> <span class="hl2">arr[${i}] = arr[${minIdx}] = ${a[i]}</span>. El mínimo llega a su posición definitiva.`
+      };
+      a[minIdx]=t; swaps++;
+      yield {
+        lines:['swp3'], arr:[...a], boundary:i, scanning:-1, minIdx, swapping:[i,minIdx],
+        sortedUntil:i, i, j:null, temp:t, comps, swaps, pass:i+1,
+        msg:`<b>Línea 10:</b> <span class="hl2">arr[${minIdx}] = temp = ${t}</span>. Intercambio completo. Swap nº ${swaps}.`
+      };
     } else {
       yield {
-        arr: [...a], boundary: i, scanning: -1, minIdx: i, swapping: [],
-        sortedUntil: i, comparisons, swaps, pass: i + 1,
-        msg: `El mínimo <span class="hlm">${a[i]}</span> ya estaba en la posición ${i}. No hace falta intercambiar.`
+        lines:['check'], arr:[...a], boundary:i, scanning:-1, minIdx:i, swapping:[],
+        sortedUntil:i, i, j:null, temp:null, comps, swaps, pass:i+1,
+        msg:`El mínimo <span class="hlm">${a[i]}</span> ya estaba en la posición ${i}. <span class="hls">Sin intercambio.</span> Los swaps solo ocurren cuando son necesarios.`
       };
     }
 
     yield {
-      arr: [...a], boundary: i + 1, scanning: -1, minIdx: -1, swapping: [],
-      sortedUntil: i + 1, comparisons, swaps, pass: i + 1,
-      msg: `✅ Posición <strong>${i}</strong> fijada con <span class="hls">${a[i]}</span>. Ya tenemos <strong>${i+1}</strong> elemento${i+1===1?'':'s'} en su sitio definitivo.`
+      lines:['outer'], arr:[...a], boundary:i+1, scanning:-1, minIdx:-1, swapping:[],
+      sortedUntil:i+1, i:i+1, j:null, temp:null, comps, swaps, pass:i+1,
+      msg:`<span class="hls">✅ Posición ${i} fijada</span> con el valor <b>${a[i]}</b>. Ya tenemos <b>${i+1}</b> elemento${i+1===1?'':'s'} en su lugar definitivo.`
     };
   }
 
   yield {
-    arr: [...a], boundary: n, scanning: -1, minIdx: -1, swapping: [],
-    sortedUntil: n, comparisons, swaps, pass: n - 1,
-    msg: `🎉 <span class="hls">¡Ordenación completada!</span> Total: <strong>${comparisons} comparaciones</strong> y solo <strong>${swaps} intercambio${swaps===1?'':'s'}</strong>.`
+    lines:['done'], arr:[...a], boundary:n, scanning:-1, minIdx:-1, swapping:[],
+    sortedUntil:n, i:n-1, j:null, temp:null, comps, swaps, pass:n-1,
+    msg:`<b>Línea 11:</b> <span class="hls">¡Ordenación completada!</span> Total: <b>${comps} comparaciones</b> (siempre n(n-1)/2 = ${n*(n-1)/2}) y solo <b>${swaps} intercambio${swaps===1?'':'s'}</b>.`
   };
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
-function renderBars(state) {
-  const wrap = document.getElementById('barsWrap');
-  const maxH = 180;
-  const maxVal = Math.max(...state.arr);
+// ══ FLOW VIZ ══════════════════════════════════════════════════════════════
+let fArr=[...DEFAULT_ARR], fGen=selGen(fArr), fTimer=null, fDone=false, fN=0;
 
-  wrap.innerHTML = state.arr.map((v, i) => {
-    const h = Math.max(20, Math.round((v / maxVal) * maxH));
-    const isSorted   = i < state.sortedUntil;
-    const isMin      = i === state.minIdx && !state.swapping.includes(i);
-    const isScanning = i === state.scanning;
-    const isSwapping = state.swapping.includes(i);
-    const isBoundary = i === state.boundary && !isSorted;
+function renderFMini(s){
+  const maxV=Math.max(...s.arr);
+  document.getElementById('fMiniB').innerHTML=s.arr.map((v,i)=>{
+    const h=Math.max(10,Math.round((v/maxV)*80));
+    const isSrt=i<s.sortedUntil, isMin=i===s.minIdx&&!s.swapping.includes(i);
+    const isScn=i===s.scanning, isSwp=s.swapping.includes(i);
+    const bg=isSwp?'var(--accent2)':isMin?'var(--minc)':isScn?'var(--accent)':isSrt?'var(--sorted)':'var(--border2)';
+    const vc=isSwp?'var(--accent2)':isMin?'var(--minc)':isScn?'var(--accent)':isSrt?'var(--sorted)':'var(--muted2)';
+    return `<div class="mb-col"><div class="mb-val" style="color:${vc}">${v}</div><div class="mb-bar" style="height:${h}px;background:${bg}"></div><div class="mb-idx">[${i}]</div></div>`;
+  }).join('');
 
-    let bg = '#1e2a35';
-    if (isSwapping)       bg = 'var(--accent2)';
-    else if (isMin)       bg = 'var(--min-color)';
-    else if (isScanning)  bg = 'var(--accent)';
-    else if (isSorted)    bg = 'var(--sorted)';
-    else if (isBoundary)  bg = '#2e4a5e';
+  document.getElementById('fCells').innerHTML=s.arr.map((v,i)=>{
+    const isSrt=i<s.sortedUntil, isMin=i===s.minIdx&&!s.swapping.includes(i);
+    const isScn=i===s.scanning, isSwp=s.swapping.includes(i);
+    const cls=isSwp?'swp':isMin?'min':isScn?'scn':isSrt?'srt':(i===s.boundary&&!isSrt)?'bnd':'';
+    return `<div style="position:relative;margin-bottom:22px"><div class="ac ${cls}">${v}</div><div class="ac-idx">[${i}]</div></div>`;
+  }).join('');
 
-    const valColor = isSwapping ? 'var(--accent2)' : isMin ? 'var(--min-color)' : isScanning ? 'var(--accent)' : isSorted ? 'var(--sorted)' : 'var(--muted)';
-
-    return `<div class="bar-col">
-      <div class="bar-val" style="color:${valColor}">${v}</div>
-      <div class="bar" style="height:${h}px; background:${bg}"></div>
-      <div class="bar-idx">[${i}]</div>
-    </div>`;
+  document.getElementById('fPtrs').innerHTML=s.arr.map((_,i)=>{
+    const labels=[];
+    if(i===s.boundary&&i<s.arr.length&&s.sortedUntil===i) labels.push({t:'i',c:'var(--accent2)'});
+    if(i===s.minIdx&&s.minIdx>=0) labels.push({t:'min',c:'var(--minc)'});
+    if(i===s.scanning&&s.scanning>=0) labels.push({t:'j',c:'var(--accent)'});
+    const txt=labels.map(l=>`<span style="color:${l.c}">${l.t}</span>`).join(' ');
+    return `<div class="ptr-cell">${txt}</div>`;
   }).join('');
 }
 
-function renderPointers(state) {
-  const row = document.getElementById('pointerRow');
-  row.innerHTML = state.arr.map((_, i) => {
-    let label = '';
-    let color = 'transparent';
-    if (i === state.boundary && i < state.arr.length && state.sortedUntil === i) {
-      label = 'i'; color = 'var(--accent2)';
-    }
-    if (i === state.minIdx && state.minIdx >= 0) {
-      label = label ? 'i=min' : 'min'; color = 'var(--min-color)';
-    }
-    if (i === state.scanning && state.scanning >= 0) {
-      label = 'j'; color = 'var(--accent)';
-    }
-    return `<div class="pointer-cell" style="color:${color}">${label}</div>`;
-  }).join('');
+function applyFlow(s){
+  document.querySelectorAll('#pseudoBlock .code-line').forEach(el=>el.classList.toggle('active',s.lines.includes(el.dataset.l)));
+  renderFMini(s);
+  document.getElementById('fvN').innerHTML=`<b>n =</b> ${s.arr.length}`;
+  document.getElementById('fvI').innerHTML=`<b>i =</b> ${s.i===null?'—':s.i}`;
+  document.getElementById('fvJ').innerHTML=`<b>j =</b> ${s.j===null?'—':s.j}`;
+  const prevMin=document.getElementById('fvMin').dataset.prev;
+  const curMin=String(s.minIdx<0?'—':s.minIdx);
+  document.getElementById('fvMin').innerHTML=`<b>idx_min =</b> ${s.minIdx<0?'—':s.minIdx}`;
+  document.getElementById('fvMin').className='var-pill'+(prevMin!==undefined&&prevMin!==curMin?' changed':'');
+  document.getElementById('fvMin').dataset.prev=curMin;
+
+  document.getElementById('fvAI').innerHTML=`<b>arr[i] =</b> ${s.i!==null?s.arr[s.i]:'—'}`;
+  document.getElementById('fvAJ').innerHTML=`<b>arr[j] =</b> ${s.j!==null?s.arr[s.j]:'—'}`;
+  document.getElementById('fvAM').innerHTML=`<b>arr[idx_min] =</b> ${s.minIdx>=0?s.arr[s.minIdx]:'—'}`;
+  document.getElementById('fvTemp').innerHTML=`<b>temp =</b> ${s.temp!==null?s.temp:'—'}`;
+  document.getElementById('fvPass').innerHTML=`<b>pasada =</b> ${s.pass}`;
+  document.getElementById('fvComp').innerHTML=`<b>comps =</b> ${s.comps}`;
+  document.getElementById('fvSwap').innerHTML=`<b>swaps =</b> ${s.swaps}`;
+  document.getElementById('fvSorted').innerHTML=`<b>fijados =</b> ${s.sortedUntil}`;
+  document.getElementById('fExplain').innerHTML=s.msg;
 }
 
-function renderCells(state) {
-  const disp = document.getElementById('arrayDisplay');
-  disp.innerHTML = state.arr.map((v, i) => {
-    const isSorted   = i < state.sortedUntil;
-    const isMin      = i === state.minIdx && !state.swapping.includes(i);
-    const isScanning = i === state.scanning;
-    const isSwapping = state.swapping.includes(i);
-    let cls = '';
-    if (isSwapping)      cls = 'swapping';
-    else if (isMin)      cls = 'minimum';
-    else if (isScanning) cls = 'scanning';
-    else if (isSorted)   cls = 'sorted';
-    return `<div class="arr-cell ${cls}">${v}</div>`;
-  }).join('');
+function fStep(){
+  if(fDone) return;
+  const r=fGen.next();
+  if(r.done||!r.value){fDone=true;fStopAuto();return;}
+  applyFlow(r.value);fN++;
+  document.getElementById('f-ctr').textContent='paso '+fN;
+  if(r.value.lines.includes('done')&&r.value.sortedUntil===r.value.arr.length){fDone=true;document.getElementById('f-step').disabled=true;fStopAuto();}
 }
-
-function renderStats(state) {
-  document.getElementById('statComp').textContent   = state.comparisons;
-  document.getElementById('statSwap').textContent   = state.swaps;
-  document.getElementById('statPass').textContent   = state.pass;
-  document.getElementById('statSorted').textContent = state.sortedUntil;
-}
-
-function renderAll(state) {
-  renderBars(state);
-  renderPointers(state);
-  renderCells(state);
-  renderStats(state);
-  document.getElementById('stepExplain').innerHTML = state.msg;
-}
-
-// ─── State ────────────────────────────────────────────────────────────────────
-let gen, autoTimer = null, done = false;
-
-function initGen() {
-  gen = selectionGen(arr);
-  done = false;
-  clearInterval(autoTimer); autoTimer = null;
-  document.getElementById('btnAuto').textContent = '▶ Auto';
-  document.getElementById('btnStep').disabled = false;
-  document.getElementById('btnAuto').disabled = false;
-
-  renderAll({
-    arr: [...arr], boundary: 0, scanning: -1, minIdx: -1, swapping: [],
-    sortedUntil: 0, comparisons: 0, swaps: 0, pass: 0,
-    msg: `Pulsa <strong>Paso →</strong> para ver cómo se busca el mínimo en cada pasada, o <strong>▶ Auto</strong> para la animación completa.`
+function fStopAuto(){clearInterval(fTimer);fTimer=null;document.getElementById('f-auto').textContent='▶ Auto';if(fDone)document.getElementById('f-auto').disabled=true;}
+function fReset(a){
+  fStopAuto();fDone=false;fN=0;fArr=a||[...DEFAULT_ARR];fGen=selGen(fArr);
+  document.getElementById('f-step').disabled=false;document.getElementById('f-auto').disabled=false;
+  document.getElementById('f-auto').textContent='▶ Auto';
+  document.getElementById('f-ctr').textContent='paso 0';
+  document.querySelectorAll('#pseudoBlock .code-line').forEach(el=>el.classList.remove('active'));
+  document.getElementById('fExplain').innerHTML='Pulsa <b>Paso →</b> para seguir la ejecución línea a línea y ver cómo cambia cada variable.';
+  const is={lines:[],arr:fArr,boundary:0,scanning:-1,minIdx:-1,swapping:[],sortedUntil:0,i:null,j:null,temp:null,comps:0,swaps:0,pass:0,msg:''};
+  renderFMini(is);
+  ['fvI','fvJ','fvMin','fvAI','fvAJ','fvAM','fvTemp'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML=el.innerHTML.replace(/=.*$/,'= —');el.className='var-pill';el.dataset.prev='';
+  });
+  document.getElementById('fvN').innerHTML=`<b>n =</b> ${fArr.length}`;
+  ['fvPass','fvComp','fvSwap','fvSorted'].forEach((id,k)=>{
+    document.getElementById(id).innerHTML=`<b>${['pasada','comps','swaps','fijados'][k]} =</b> 0`;
   });
 }
+document.getElementById('f-step').addEventListener('click',fStep);
+document.getElementById('f-reset').addEventListener('click',()=>fReset());
+document.getElementById('f-shuffle').addEventListener('click',()=>fReset(shuffle(POOL)));
+document.getElementById('f-auto').addEventListener('click',function(){
+  if(fTimer){fStopAuto();}
+  else{this.textContent='⏸ Pausa';const sp=1700-parseInt(document.getElementById('fSp').value);fTimer=setInterval(()=>{fStep();if(fDone)fStopAuto();},sp);}
+});
 
-function step() {
-  if (done) return;
-  const result = gen.next();
-  if (result.done || !result.value) {
-    done = true;
-    document.getElementById('btnStep').disabled = true;
-    document.getElementById('btnAuto').disabled = true;
-    clearInterval(autoTimer); autoTimer = null;
-    document.getElementById('btnAuto').textContent = '▶ Auto';
-    return;
-  }
-  renderAll(result.value);
+// ══ CLASSIC VIZ ═══════════════════════════════════════════════════════════
+let cArr=[...DEFAULT_ARR], cGen=selGen(cArr), cTimer=null, cDone=false, cLogN=0;
+
+function renderCBars(s){
+  const maxV=Math.max(...s.arr);
+  document.getElementById('cBars').innerHTML=s.arr.map((v,i)=>{
+    const h=Math.max(20,Math.round((v/maxV)*180));
+    const isSrt=i<s.sortedUntil, isMin=i===s.minIdx&&!s.swapping.includes(i);
+    const isScn=i===s.scanning, isSwp=s.swapping.includes(i);
+    const bg=isSwp?'var(--accent2)':isMin?'var(--minc)':isScn?'var(--accent)':isSrt?'var(--sorted)':'var(--border2)';
+    const vc=isSwp?'var(--accent2)':isMin?'var(--minc)':isScn?'var(--accent)':isSrt?'var(--sorted)':'var(--muted)';
+    return `<div class="bar-col2"><div class="bar-val2" style="color:${vc}">${v}</div><div class="bar2" style="height:${h}px;background:${bg}"></div><div class="bar-idx2">[${i}]</div></div>`;
+  }).join('');
+
+  document.getElementById('cPtrs').innerHTML=s.arr.map((_,i)=>{
+    const labels=[];
+    if(i===s.boundary&&s.sortedUntil===i&&i<s.arr.length) labels.push({t:'i',c:'var(--accent2)'});
+    if(i===s.minIdx&&s.minIdx>=0) labels.push({t:'min',c:'var(--minc)'});
+    if(i===s.scanning&&s.scanning>=0) labels.push({t:'j',c:'var(--accent)'});
+    return `<div class="ptr-cell-c" style="color:${labels[0]?.c||'transparent'}">${labels.map(l=>l.t).join('/')}</div>`;
+  }).join('');
+
+  document.getElementById('cCells').innerHTML=s.arr.map((v,i)=>{
+    const isSrt=i<s.sortedUntil, isMin=i===s.minIdx&&!s.swapping.includes(i);
+    const isScn=i===s.scanning, isSwp=s.swapping.includes(i);
+    const cls=isSwp?'swp':isMin?'min':isScn?'scn':isSrt?'srt':'';
+    return `<div class="arr-cell ${cls}">${v}</div>`;
+  }).join('');
+
+  document.getElementById('cComp').textContent=s.comps;
+  document.getElementById('cSwap').textContent=s.swaps;
+  document.getElementById('cPass').textContent=s.pass;
+  document.getElementById('cSorted').textContent=s.sortedUntil;
 }
 
-document.getElementById('btnStep').addEventListener('click', step);
+function addCLog(msg){
+  const log=document.getElementById('cLog');
+  const d=document.createElement('div');d.className='ls';
+  d.innerHTML=`<span style="color:var(--muted2)">[${String(cLogN).padStart(2,'0')}]</span> ${msg.replace(/<[^>]*>/g,'')}`;
+  log.appendChild(d);log.scrollTop=log.scrollHeight;cLogN++;
+}
 
-document.getElementById('btnAuto').addEventListener('click', function () {
-  if (autoTimer) {
-    clearInterval(autoTimer); autoTimer = null;
-    this.textContent = '▶ Auto';
-  } else {
-    const speed = 1600 - parseInt(document.getElementById('speedSlider').value);
-    this.textContent = '⏸ Pausa';
-    autoTimer = setInterval(() => {
-      step();
-      if (done) {
-        clearInterval(autoTimer); autoTimer = null;
-        document.getElementById('btnAuto').textContent = '▶ Auto';
-      }
-    }, speed);
-  }
+function cStep(){
+  if(cDone) return;
+  const r=cGen.next();
+  if(r.done||!r.value){cDone=true;cStopAuto();return;}
+  renderCBars(r.value);
+  document.getElementById('cExplain').innerHTML=r.value.msg;
+  addCLog(r.value.msg);
+  if(r.value.lines.includes('done')&&r.value.sortedUntil===r.value.arr.length){cDone=true;document.getElementById('c-step').disabled=true;cStopAuto();}
+}
+function cStopAuto(){clearInterval(cTimer);cTimer=null;document.getElementById('c-auto').textContent='▶ Auto';if(cDone)document.getElementById('c-auto').disabled=true;}
+function cReset(a){
+  cStopAuto();cDone=false;cLogN=0;cArr=a||[...DEFAULT_ARR];cGen=selGen(cArr);
+  document.getElementById('c-step').disabled=false;document.getElementById('c-auto').disabled=false;
+  document.getElementById('c-auto').textContent='▶ Auto';
+  document.getElementById('cExplain').innerHTML='Pulsa <strong>Paso →</strong> para ver cómo se busca el mínimo en cada pasada.';
+  document.getElementById('cLog').innerHTML='';
+  const is={arr:cArr,boundary:0,scanning:-1,minIdx:-1,swapping:[],sortedUntil:0,comps:0,swaps:0,pass:0};
+  renderCBars(is);
+}
+document.getElementById('c-step').addEventListener('click',cStep);
+document.getElementById('c-reset').addEventListener('click',()=>cReset());
+document.getElementById('c-shuffle').addEventListener('click',()=>{cReset(shuffle(POOL));});
+document.getElementById('c-auto').addEventListener('click',function(){
+  if(cTimer){cStopAuto();}
+  else{this.textContent='⏸ Pausa';const sp=1600-parseInt(document.getElementById('cSp').value);cTimer=setInterval(()=>{cStep();if(cDone)cStopAuto();},sp);}
 });
 
-document.getElementById('btnReset').addEventListener('click', () => {
-  arr = [...DEFAULT_ARR];
-  initGen();
-});
+// ── Navbar scroll ──────────────────────────────────────────────────────────
+const SECS=['hero','concepto','pasos','flujo-datos','visualizador','pseudocodigo','complejidad','comparacion'];
+window.addEventListener('scroll',()=>{
+  let cur='';
+  SECS.forEach(id=>{const el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-80)cur=id;});
+  document.querySelectorAll('.nav-link').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+},{passive:true});
 
-document.getElementById('btnShuffle').addEventListener('click', () => {
-  const pool = [11, 12, 22, 25, 34, 38, 45, 55, 64, 78, 90, 5];
-  arr = pool.sort(() => Math.random() - 0.5).slice(0, 7);
-  initGen();
-});
-
-initGen();
+fReset(); cReset();
 </script>
 </body>
 </html>
